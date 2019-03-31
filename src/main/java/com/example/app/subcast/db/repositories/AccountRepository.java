@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 public interface AccountRepository extends JpaRepository<Account, Long> {
     /**
      * loads Account object by username
+     *
      * @param username query param
      * @return account object with given username
      */

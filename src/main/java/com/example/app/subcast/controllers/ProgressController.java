@@ -7,9 +7,13 @@ import com.example.app.subcast.db.repositories.ProgressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 @Controller
 @RequestMapping(path = {"/progress"})
@@ -34,15 +38,15 @@ public class ProgressController implements CommonResponses {
         Account account = accountRepository.findByToken(token);
         if (account != null) {
             if (body.containsKey("guid")) {
-                return Map.of(
-                        "status", "OK",
-                        "progresses", progressRepository.findByAccountIdAndGuid(account.getId(), body.get("guid"))
-                );
+                return new TreeMap() {{
+                    put("status", "OK");
+                    put("progresses", progressRepository.findByAccountIdAndGuid(account.getId(), body.get("guid")));
+                }};
             } else {
-                return Map.of(
-                        "status", "OK",
-                        "progresses", progressRepository.findAllByAccountId(account.getId())
-                );
+                return new TreeMap() {{
+                    put("status", "OK");
+                    put("progresses", progressRepository.findAllByAccountId(account.getId()));
+                }};
             }
         } else {
             return INVALID_TOKEN;

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 @Controller
 @RequestMapping(path = {"/auth"})
@@ -32,15 +33,17 @@ public class AuthController {
     public Map authenticate(@RequestBody Account account) {
         Token token = authService.authenticate(account);
         if (token != null) {
-            return Map.of(
-                    "status", "OK",
-                    "response", Map.of("token", token.toString())
-            );
+            return new TreeMap() {{
+                put("status", "OK");
+                put("response", new TreeMap() {{
+                    put("token", token.toString());
+                }});
+            }};
         } else {
-            return Map.of(
-                    "status", "ERROR",
-                    "errorMessage", "Authentication failed. Wrong username or password"
-            );
+            return new TreeMap() {{
+                put("status", "ERROR");
+                put("errorMessage", "Authentication failed. Wrong username or password");
+            }};
         }
     }
 }

@@ -8,9 +8,13 @@ import com.example.app.subcast.db.repositories.PodcastRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 @Controller
 @RequestMapping(path = {"/subscriptions"})
@@ -19,7 +23,8 @@ public class SubscriptionsController implements CommonResponses {
     private final PodcastRepository podcastRepository;
 
     @Autowired
-    public SubscriptionsController(AccountRepository accountRepository, PodcastRepository podcastRepository) {
+    public SubscriptionsController(AccountRepository accountRepository,
+                                   PodcastRepository podcastRepository) {
         this.accountRepository = accountRepository;
         this.podcastRepository = podcastRepository;
     }
@@ -33,10 +38,10 @@ public class SubscriptionsController implements CommonResponses {
     public Map getSubscriptions(@RequestBody Token token) {
         Account account = accountRepository.findByToken(token);
         if (account != null) {
-            return Map.of(
-                    "status", "OK",
-                    "response", account.getSubscriptions()
-            );
+            return new TreeMap() {{
+                put("status", "OK");
+                put("response", account.getSubscriptions());
+            }};
         } else {
             return INVALID_TOKEN;
         }

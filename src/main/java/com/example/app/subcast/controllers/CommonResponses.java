@@ -1,8 +1,14 @@
 package com.example.app.subcast.controllers;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 public interface CommonResponses {
-    Map INVALID_TOKEN = Map.of("status", "ERROR", "errorMessage", "Invalid token.");
-    Map STATUS_OK = Map.of("status", "OK");
+    Map<String, String> INVALID_TOKEN = new TreeMap<String, String>() {{
+        put("status", "ERROR");
+        put("errorMessage", "Invalid token.");
+    }};
+    Map<String, String> STATUS_OK = new TreeMap<String, String>() {{
+        put("status", "OK");
+    }};
 }

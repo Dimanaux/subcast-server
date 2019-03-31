@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 @Controller
 @RequestMapping(path = {"/register"})
@@ -32,8 +33,10 @@ public class RegisterController implements CommonResponses {
         if (authService.createAccount(account)) {
             return STATUS_OK;
         } else {
-            return Map.of("status", "ERROR",
-                    "errorMessage", "username is already taken");
+            return new TreeMap() {{
+                put("status", "ERROR");
+                put("errorMessage", "username is already taken");
+            }};
         }
     }
 }

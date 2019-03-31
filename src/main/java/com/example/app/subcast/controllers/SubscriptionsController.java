@@ -1,9 +1,10 @@
 package com.example.app.subcast.controllers;
 
 import com.example.app.subcast.db.Account;
+import com.example.app.subcast.db.Podcast;
 import com.example.app.subcast.db.Token;
-import com.example.app.subcast.repositories.AccountRepository;
-import com.example.app.subcast.repositories.SubscriptionRepository;
+import com.example.app.subcast.db.repositories.AccountRepository;
+import com.example.app.subcast.db.repositories.PodcastRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -15,12 +16,12 @@ import java.util.Map;
 @RequestMapping(path = {"/subscriptions"})
 public class SubscriptionsController implements CommonResponses {
     private final AccountRepository accountRepository;
-    private final SubscriptionRepository subscriptionRepository;
+    private final PodcastRepository podcastRepository;
 
     @Autowired
-    public SubscriptionsController(AccountRepository accountRepository, SubscriptionRepository subscriptionRepository) {
+    public SubscriptionsController(AccountRepository accountRepository, PodcastRepository podcastRepository) {
         this.accountRepository = accountRepository;
-        this.subscriptionRepository = subscriptionRepository;
+        this.podcastRepository = podcastRepository;
     }
 
     @ResponseBody
@@ -30,11 +31,11 @@ public class SubscriptionsController implements CommonResponses {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public Map getSubscriptions(@RequestBody Token token) {
-        Account account = accountRepository.findAccountByToken(token);
+        Account account = accountRepository.findByToken(token);
         if (account != null) {
             return Map.of(
                     "status", "OK",
-                    "response", subscriptionRepository.findAllByAccountId(account.getId())
+                    "response", account.getSubscriptions()
             );
         } else {
             return INVALID_TOKEN;
@@ -43,15 +44,21 @@ public class SubscriptionsController implements CommonResponses {
 
     @ResponseBody
     @RequestMapping(
-            path = "/{podcastId}",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Map addSubscription(@RequestBody Token token, @PathVariable int podcastId) {
-        Account account = accountRepository.findAccountByToken(token);
+    public Map addSubscription(@RequestBody Map<String, String> body) {
+        Token token = new Token(body.get("token"));
+        String feedUrl = body.get("podcastFeedUrl");
+        long podcastId = Long.parseLong(body.get("podcastId"));
+
+        Account account = accountRepository.findByToken(token);
         if (account != null) {
-            subscriptionRepository.createSubscription(account.getId(), podcastId);
+            if (feedUrl != null && !feedUrl.isEmpty()) {
+                podcastRepository.save(new Podcast(podcastId, feedUrl));
+            }
+            podcastRepository.createSubscription(account.getId(), podcastId);
             return STATUS_OK;
         } else {
             return INVALID_TOKEN;
@@ -60,19 +67,20 @@ public class SubscriptionsController implements CommonResponses {
 
     @ResponseBody
     @RequestMapping(
-            path = "/{podcastId}",
             method = RequestMethod.DELETE,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Map deleteSubscription(@RequestBody Token token, @PathVariable int podcastId) {
-        Account account = accountRepository.findAccountByToken(token);
+    public Map deleteSubscription(@RequestBody Map<String, String> body) {
+        Token token = new Token(body.get("token"));
+        long podcastId = Long.parseLong(body.get("podcastId"));
+
+        Account account = accountRepository.findByToken(token);
         if (account != null) {
-            subscriptionRepository.deleteSubscription(account.getId(), podcastId);
+            podcastRepository.deleteSubscription(account.getId(), podcastId);
             return STATUS_OK;
         } else {
             return INVALID_TOKEN;
         }
     }
-
 }

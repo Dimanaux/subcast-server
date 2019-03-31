@@ -29,7 +29,7 @@ public class RegisterController implements CommonResponses {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public Map register(@RequestBody Account account) {
-        if (authService.createAccount(account) != null) {
+        if (authService.createAccount(account)) {
             return STATUS_OK;
         } else {
             return Map.of("status", "ERROR",

@@ -34,7 +34,7 @@ public class AuthController {
         if (token != null) {
             return Map.of(
                     "status", "OK",
-                    "response", token
+                    "response", Map.of("token", token.toString())
             );
         } else {
             return Map.of(

@@ -2,14 +2,12 @@ package com.example.app.subcast.services;
 
 import com.example.app.subcast.db.Account;
 import com.example.app.subcast.db.Token;
-import com.example.app.subcast.repositories.AccountRepository;
+import com.example.app.subcast.db.repositories.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-@Component
 @Service
 public class AuthServiceImpl implements AuthService {
     private AccountRepository accountRepository;
@@ -24,7 +22,7 @@ public class AuthServiceImpl implements AuthService {
         String username = account.getUsername();
         String password = encrypt(account.getPassword());
 
-        Account accountByUsername = accountRepository.findAccountByUsername(username);
+        Account accountByUsername = accountRepository.findByUsername(username);
 
         // wrong username
         if (accountByUsername == null) {
@@ -37,18 +35,23 @@ public class AuthServiceImpl implements AuthService {
         }
 
         Token token = createToken(accountByUsername);
-        accountRepository.createToken(accountByUsername, token);
+        accountRepository.saveToken(accountByUsername.getId(), token.toString());
         return token;
     }
 
     @Override
-    public Account createAccount(Account account) {
-        if (accountRepository.findAccountByUsername(account.getUsername()) == null) {
-            accountRepository.createAccount(account);
-            return account;
+    public boolean createAccount(Account account) {
+        if (!usernameTaken(account.getUsername())) {
+            accountRepository.save(account);
+            return true;
         } else {
-            return null;
+            return false;
         }
+    }
+
+    @Override
+    public boolean usernameTaken(String username) {
+        return accountRepository.findByUsername(username) != null;
     }
 
     private Token createToken(Account account) {

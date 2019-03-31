@@ -1,7 +1,17 @@
 package com.example.app.subcast.db;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "account_token")
 public class Token {
+    @Id
+    @Column(name = "token")
     private String token;
+
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     public Token() {
     }
@@ -14,8 +24,18 @@ public class Token {
         return token;
     }
 
-    public void setToken(String token) {
+    public Token setToken(String token) {
         this.token = token;
+        return this;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public Token setAccount(Account account) {
+        this.account = account;
+        return this;
     }
 
     @Override

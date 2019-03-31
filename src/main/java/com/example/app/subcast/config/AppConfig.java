@@ -1,6 +1,5 @@
 package com.example.app.subcast.config;
 
-import com.example.app.subcast.aspects.TokenAuthAspect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;

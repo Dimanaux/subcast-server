@@ -1,50 +1,65 @@
 package com.example.app.subcast.db;
 
+import javax.persistence.*;
+
 /**
  * represents someone's progress on particular podcast episode
  */
+@Entity
+@Table(name = "progress")
 public class Progress {
-    // whose progress (account identifier)
-    private int accountId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-    // episode link! IDENTIFIER
-    private String link;
+    // whose progress (account identifier)
+    @Column(name = "account_id")
+    private Long accountId;
+
+    @ManyToOne
+    @JoinColumn(name = "episode_guid")
+    private Episode episode;
 
     // time listened in seconds
-    private int time;
+    @Column(name = "time")
+    private Integer time;
 
     public Progress() {
     }
 
-    public Progress(int accountId, String link, int time) {
-        this.accountId = accountId;
-        this.link = link;
-        this.time = time;
+    public Long getId() {
+        return id;
     }
 
-    public int getAccountId() {
+    public Progress setId(Long id) {
+        this.id = id;
+        return this;
+    }
+
+    public Long getAccountId() {
         return accountId;
     }
 
-    public Progress setAccountId(int accountId) {
+    public Progress setAccountId(Long accountId) {
         this.accountId = accountId;
         return this;
     }
 
-    public String getLink() {
-        return link;
+    public Episode getEpisode() {
+        return episode;
     }
 
-    public Progress setLink(String link) {
-        this.link = link;
+    public Progress setEpisode(Episode episode) {
+        this.episode = episode;
         return this;
     }
 
-    public int getTime() {
+    public Integer getTime() {
         return time;
     }
 
-    public Progress setTime(int time) {
+    public Progress setTime(Integer time) {
         this.time = time;
         return this;
     }

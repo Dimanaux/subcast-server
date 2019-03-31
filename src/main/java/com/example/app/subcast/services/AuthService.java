@@ -6,5 +6,7 @@ import com.example.app.subcast.db.Token;
 public interface AuthService {
     Token authenticate(Account account);
 
-    Account createAccount(Account account);
+    boolean createAccount(Account account);
+
+    boolean usernameTaken(String username);
 }

@@ -1,10 +1,9 @@
 package com.example.app.subcast.controllers;
 
 import com.example.app.subcast.db.Account;
-import com.example.app.subcast.db.Progress;
 import com.example.app.subcast.db.Token;
-import com.example.app.subcast.repositories.AccountRepository;
-import com.example.app.subcast.repositories.ProgressRepository;
+import com.example.app.subcast.db.repositories.AccountRepository;
+import com.example.app.subcast.db.repositories.ProgressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -30,31 +29,21 @@ public class ProgressController implements CommonResponses {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public Map getProgresses(@RequestBody Token token) {
-        Account account = accountRepository.findAccountByToken(token);
+    public Map getProgress(@RequestBody Map<String, String> body) {
+        Token token = new Token(body.get("token"));
+        Account account = accountRepository.findByToken(token);
         if (account != null) {
-            return Map.of(
-                    "status", "OK",
-                    "progresses", progressRepository.findAllByAccountId(account.getId())
-            );
-        } else {
-            return INVALID_TOKEN;
-        }
-    }
-
-    @ResponseBody
-    @RequestMapping(
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE
-    )
-    public Map getProgress(@RequestBody Token token, @RequestParam(name = "link") String link) {
-        Account account = accountRepository.findAccountByToken(token);
-        if (account != null) {
-            return Map.of(
-                    "status", "OK",
-                    "progresses", progressRepository.findByAccountAndLink(account.getId(), link)
-            );
+            if (body.containsKey("guid")) {
+                return Map.of(
+                        "status", "OK",
+                        "progresses", progressRepository.findByAccountIdAndGuid(account.getId(), body.get("guid"))
+                );
+            } else {
+                return Map.of(
+                        "status", "OK",
+                        "progresses", progressRepository.findAllByAccountId(account.getId())
+                );
+            }
         } else {
             return INVALID_TOKEN;
         }
@@ -66,10 +55,14 @@ public class ProgressController implements CommonResponses {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public Map updateProgress(@RequestBody Token token, @RequestParam(name = "link") String link, @RequestParam(name = "time") int time) {
-        Account account = accountRepository.findAccountByToken(token);
+    public Map updateProgress(@RequestBody Map<String, String> body) {
+        Token token = new Token(body.get("token"));
+        String guid = body.get("guid");
+        int time = Integer.parseInt(body.get("time"));
+
+        Account account = accountRepository.findByToken(token);
         if (account != null) {
-            progressRepository.updateProgress(account.getId(), link, time);
+            progressRepository.saveProgress(account.getId(), guid, time);
             return STATUS_OK;
         } else {
             return INVALID_TOKEN;

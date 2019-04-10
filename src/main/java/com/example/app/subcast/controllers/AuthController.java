@@ -6,17 +6,14 @@ import com.example.app.subcast.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.TreeMap;
 
 @Controller
 @RequestMapping(path = {"/auth"})
-public class AuthController {
+public class AuthController implements CommonResponses {
     private AuthService authService;
 
     @Autowired
@@ -33,16 +30,14 @@ public class AuthController {
     public Map authenticate(@RequestBody Account account) {
         Token token = authService.authenticate(account);
         if (token != null) {
-            return new TreeMap() {{
-                put("status", "OK");
-                put("response", new TreeMap() {{
-                    put("token", token.toString());
-                }});
+            return new TreeMap<String, Object>() {{
+                putAll(STATUS_OK);
+                put("token", token.toString());
             }};
         } else {
-            return new TreeMap() {{
-                put("status", "ERROR");
-                put("errorMessage", "Authentication failed. Wrong username or password");
+            return new TreeMap<String, Object>() {{
+                putAll(STATUS_ERROR);
+                put("errorMessage", "Wrong username or password.");
             }};
         }
     }

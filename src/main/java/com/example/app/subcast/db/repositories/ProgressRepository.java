@@ -24,14 +24,14 @@ public interface ProgressRepository extends JpaRepository<Progress, Long> {
      */
     @Query(
             value = "INSERT INTO progress (account_id, episode_guid, time) " +
-                    " VALUES (:account, :episode, :time) " +
-                    " ON CONFLICT DO UPDATE SET time = :time;",
+                    " VALUES (:account, :guid, :time) " +
+                    " ON CONFLICT DO UPDATE SET time = :time",
             nativeQuery = true
     )
     @Transactional
     @Modifying
     void saveProgress(@Param("account") long accountId,
-                      @Param("episode") String episodeGuid,
+                      @Param("guid") String episodeGuid,
                       @Param("time") int time);
 
     /**

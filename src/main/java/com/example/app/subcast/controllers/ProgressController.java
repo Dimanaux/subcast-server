@@ -38,14 +38,14 @@ public class ProgressController implements CommonResponses {
         Account account = accountRepository.findByToken(token);
         if (account != null) {
             if (body.containsKey("guid")) {
-                return new TreeMap() {{
-                    put("status", "OK");
-                    put("progresses", progressRepository.findByAccountIdAndGuid(account.getId(), body.get("guid")));
+                return new TreeMap<String, Object>() {{
+                    putAll(STATUS_OK);
+                    put("progress", progressRepository.findByAccountIdAndGuid(account.getId(), body.get("guid")));
                 }};
             } else {
-                return new TreeMap() {{
-                    put("status", "OK");
-                    put("progresses", progressRepository.findAllByAccountId(account.getId()));
+                return new TreeMap<String, Object>() {{
+                    putAll(STATUS_OK);
+                    put("progress", progressRepository.findAllByAccountId(account.getId()));
                 }};
             }
         } else {

@@ -33,9 +33,9 @@ public class RegisterController implements CommonResponses {
         if (authService.createAccount(account)) {
             return STATUS_OK;
         } else {
-            return new TreeMap() {{
-                put("status", "ERROR");
-                put("errorMessage", "username is already taken");
+            return new TreeMap<String, Object>() {{
+                putAll(STATUS_ERROR);
+                put("errorMessage", "Username is already taken.");
             }};
         }
     }

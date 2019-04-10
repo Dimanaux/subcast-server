@@ -38,9 +38,9 @@ public class SubscriptionsController implements CommonResponses {
     public Map getSubscriptions(@RequestBody Token token) {
         Account account = accountRepository.findByToken(token);
         if (account != null) {
-            return new TreeMap() {{
-                put("status", "OK");
-                put("response", account.getSubscriptions());
+            return new TreeMap<String, Object>() {{
+                putAll(STATUS_OK);
+                put("subscriptions", account.getSubscriptions());
             }};
         } else {
             return INVALID_TOKEN;

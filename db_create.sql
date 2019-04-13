@@ -26,7 +26,6 @@ CREATE TABLE episode
   link       TEXT
 );
 
-DROP TABLE subscription;
 CREATE TABLE subscription
 (
   account_id INTEGER NOT NULL,

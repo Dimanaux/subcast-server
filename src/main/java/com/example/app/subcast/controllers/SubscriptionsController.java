@@ -40,7 +40,7 @@ public class SubscriptionsController implements CommonResponses {
         if (account != null) {
             return new TreeMap<String, Object>() {{
                 putAll(STATUS_OK);
-                put("subscriptions", account.getSubscriptions());
+                put("subscriptions", podcastRepository.findAllByAccountId(account.getId()));
             }};
         } else {
             return INVALID_TOKEN;

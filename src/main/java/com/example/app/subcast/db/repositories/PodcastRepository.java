@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 public interface PodcastRepository extends JpaRepository<Podcast, Long> {
@@ -33,6 +34,16 @@ public interface PodcastRepository extends JpaRepository<Podcast, Long> {
     @Modifying
     @Transactional
     void savePodcast(@Param("id") long podcastId, @Param("feed") String feedUrl);
+
+    @Query(
+            value = "SELECT s.podcast_id AS id, " +
+                    " coalesce(p.feed_url) AS feed_url " +
+                    " FROM subscription s " +
+                    " LEFT JOIN podcast p ON s.podcast_id = p.id " +
+                    " WHERE s.account_id = :accountId ",
+            nativeQuery = true
+    )
+    List<Podcast> findAllByAccountId(@Param("accountId") Long accountId);
 
     @Query(
             value = "INSERT INTO subscription (account_id, podcast_id)" +

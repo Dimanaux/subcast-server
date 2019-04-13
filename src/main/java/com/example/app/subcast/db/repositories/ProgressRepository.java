@@ -53,7 +53,6 @@ public interface ProgressRepository extends JpaRepository<Progress, Long> {
      * @param guid      episode identifier
      * @return progress object
      */
-//    @Query("from Progress p where p.account.id = :account and p.episode.guid = :guid")
     @Query(
             value = "SELECT * FROM progress WHERE " +
                     "account_id = :account AND episode_guid = :guid",

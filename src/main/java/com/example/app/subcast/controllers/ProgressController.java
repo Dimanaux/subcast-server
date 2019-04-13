@@ -72,4 +72,22 @@ public class ProgressController implements CommonResponses {
             return INVALID_TOKEN;
         }
     }
+
+    @RequestMapping(
+            method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public Map deleteProgress(@RequestBody Map<String, String> body) {
+        Token token = new Token(body.get("token"));
+        String guid = body.get("guid");
+
+        Account account = accountRepository.findByToken(token);
+        if (account != null) {
+            progressRepository.deleteProgress(account.getId(), guid);
+            return STATUS_OK;
+        } else {
+            return INVALID_TOKEN;
+        }
+    }
 }

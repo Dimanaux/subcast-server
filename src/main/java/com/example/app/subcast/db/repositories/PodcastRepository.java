@@ -15,10 +15,9 @@ public interface PodcastRepository extends JpaRepository<Podcast, Long> {
     @Transactional
     default <P extends Podcast> P save(P podcast) {
         Optional<Podcast> dbPodcast = findById(podcast.getId());
-
         Optional<String> feed = dbPodcast.map(Podcast::getFeedUrl);
 
-        if (dbPodcast.isPresent() && feed.isPresent() && !feed.get().isEmpty()) {
+        if (feed.isPresent() && !feed.get().isEmpty()) {
             return (P) dbPodcast.get();
         }
 

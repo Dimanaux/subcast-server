@@ -1,6 +1,9 @@
 package com.example.app.subcast.db;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "episode")
@@ -9,9 +12,8 @@ public class Episode {
     @Column(name = "guid")
     private String guid;
 
-    @ManyToOne
-    @JoinColumn(name = "podcast_id")
-    private Podcast podcast;
+    @Column(name = "podcast_id")
+    private Long podcastId;
 
     @Column(name = "link")
     private String link;
@@ -28,12 +30,12 @@ public class Episode {
         return this;
     }
 
-    public Podcast getPodcast() {
-        return podcast;
+    public Long getPodcastId() {
+        return podcastId;
     }
 
-    public Episode setPodcast(Podcast podcast) {
-        this.podcast = podcast;
+    public Episode setPodcastId(Long podcastId) {
+        this.podcastId = podcastId;
         return this;
     }
 

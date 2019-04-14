@@ -73,6 +73,7 @@ public class ProgressController implements CommonResponses {
         }
     }
 
+    @ResponseBody
     @RequestMapping(
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE,

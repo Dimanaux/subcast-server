@@ -177,16 +177,35 @@ Response:
 
 
 ## Progress:
+
 Request (create or update progress):
 
 Specify episode guid, time in seconds.
 
-Request (get all progress):
+Request (get all my progress):
 ```bash
 curl -X GET \
     -H 'Content-Type: application/json' \
     --data '{"token":"dima2019-04-13T16:44:04.634612200"}' \
     http://localhost:8080/progress
+```
+Response:
+```json
+{
+  "progress": [
+    {
+      "accountId": 1,
+      "episodeGuid": "tag:soundcloud,2010:tracks/590415684",
+      "time": 10
+    },
+    {
+      "accountId": 1,
+      "episodeGuid": "1",
+      "time": 1120
+    }
+  ],
+  "status": "OK"
+}
 ```
 
 Request (get progress on specific episode):
@@ -204,5 +223,8 @@ curl -X POST \
     --data '{"token":"dima2019-04-13T16:44:04.634612200","guid":"tag:soundcloud,2010:tracks/590415684","time":10}' \
     http://localhost:8080/progress
 ```
+Default STATUS OK response.
+
+## Play later:
 # TODO
 

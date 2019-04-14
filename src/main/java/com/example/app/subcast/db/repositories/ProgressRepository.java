@@ -25,7 +25,7 @@ public interface ProgressRepository extends JpaRepository<Progress, Long> {
     @Query(
             value = "INSERT INTO progress (account_id, episode_guid, time) " +
                     " VALUES (:account, :guid, :time) " +
-                    " ON CONFLICT DO UPDATE SET time = :time",
+                    " ON CONFLICT (account_id, episode_guid) DO UPDATE SET time = :time",
             nativeQuery = true
     )
     @Transactional
@@ -41,10 +41,10 @@ public interface ProgressRepository extends JpaRepository<Progress, Long> {
      * @return all the progress objects of the account
      */
     @Query(
-            value = "SELECT * FROM progress where account_id = :account",
+            value = "SELECT * FROM progress WHERE account_id = :accountId ",
             nativeQuery = true
     )
-    List<Progress> findAllByAccountId(@Param("account") long accountId);
+    List<Progress> findAllByAccountId(@Param("accountId") long accountId);
 
     /**
      * get progress for particular episode
@@ -55,7 +55,7 @@ public interface ProgressRepository extends JpaRepository<Progress, Long> {
      */
     @Query(
             value = "SELECT * FROM progress WHERE " +
-                    "account_id = :account AND episode_guid = :guid",
+                    " account_id = :account AND episode_guid = :guid",
             nativeQuery = true
     )
     Progress findByAccountIdAndGuid(@Param("account") long accountId,
@@ -69,7 +69,7 @@ public interface ProgressRepository extends JpaRepository<Progress, Long> {
      */
     @Query(
             value = "DELETE FROM progress WHERE " +
-                    "account_id = :account AND episode_guid = :guid",
+                    " account_id = :account AND episode_guid = :guid",
             nativeQuery = true
     )
     @Transactional

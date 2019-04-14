@@ -40,7 +40,6 @@ CREATE TABLE progress
   episode_guid TEXT    NOT NULL,
   account_id   INTEGER NOT NULL,
   time         INTEGER NOT NULL,
-  CONSTRAINT episode_fk FOREIGN KEY (episode_guid) REFERENCES episode (guid),
   CONSTRAINT account_fk FOREIGN KEY (account_id) REFERENCES account (id),
   CONSTRAINT progress_unique_row UNIQUE (episode_guid, account_id)
 );

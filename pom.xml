@@ -7,7 +7,7 @@
     <groupId>com.example.app</groupId>
     <artifactId>subcast</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <name>Subcast server</name>
 
